@@ -1,0 +1,36 @@
+
+
+CREATE TABLE IF NOT EXISTS ai_provider (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ai_code VARCHAR(64) NOT NULL UNIQUE,
+    ai_name VARCHAR(128) NOT NULL,
+    adapter_type VARCHAR(64) NOT NULL,
+    base_url VARCHAR(512) NOT NULL,
+    api_key VARCHAR(1024) NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    config_json TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS ai_provider_sync_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    provider_id BIGINT NOT NULL,
+    sync_status VARCHAR(32) NOT NULL,
+    message TEXT,
+    synced_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ai_provider_sync_log_provider FOREIGN KEY (provider_id) REFERENCES ai_provider(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS sys_user (
+    id         BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    username   VARCHAR(64)  NOT NULL,
+    password   VARCHAR(72)  NOT NULL,
+    nickname   VARCHAR(128),
+    enabled    BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT uk_sys_user_username UNIQUE (username)
+);
