@@ -61,7 +61,7 @@ docker build -t ai-app .
 docker run -d \
   --name ai-app \
   --restart unless-stopped \
-  -p 8888:8888 \
+  -p 18888:8888 \
   -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
   -v /root/aidata/ai/logs:/app/logs \
   ai-app
@@ -73,7 +73,7 @@ docker run -d \
 docker run -d \
   --name ai-app \
   --restart unless-stopped \
-  -p 8888:8888 \
+  -p 18888:8888 \
   -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
   -v /root/aidata/ai/logs:/app/logs \
   -e DB_URL='jdbc:mysql://127.0.0.1:3306/ai?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true' \
@@ -106,15 +106,14 @@ curl http://127.0.0.1:8888
 当仓库有新代码时，按下面步骤更新：
 
 ```bash
-cd /root/aidata/ai/ai
-git pull
+cd 
 docker stop ai-app
 docker rm ai-app
 docker build -t ai-app .
 docker run -d \
   --name ai-app \
   --restart unless-stopped \
-  -p 8888:8888 \
+  -p 18888:8888 \
   -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
   -v /root/aidata/ai/logs:/app/logs \
   ai-app
