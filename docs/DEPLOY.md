@@ -26,10 +26,16 @@ cd ai
 /app/config/application.properties
 ```
 
+日志目录：
+
+```bash
+/app/logs
+```
+
 宿主机建议目录：
 
 ```bash
-/opt/ai/config/application.properties
+/root/aidata/ai/config/application.properties
 ```
 
 把原来的配置文件内容复制到这个位置，并按实际环境修改：
@@ -51,12 +57,13 @@ docker build -t ai-app .
 
 ## 5. 启动容器
 
-```bash
+ ```bash
 docker run -d \
   --name ai-app \
   --restart unless-stopped \
   -p 8888:8888 \
-  -v /opt/ai/config/application.properties:/app/config/application.properties \
+  -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
+  -v /root/aidata/ai/logs:/app/logs \
   ai-app
 ```
 
@@ -67,7 +74,8 @@ docker run -d \
   --name ai-app \
   --restart unless-stopped \
   -p 8888:8888 \
-  -v /opt/ai/config/application.properties:/app/config/application.properties \
+  -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
+  -v /root/aidata/ai/logs:/app/logs \
   -e DB_URL='jdbc:mysql://127.0.0.1:3306/ai?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true' \
   -e DB_USERNAME='root' \
   -e DB_PASSWORD='123456' \
@@ -93,7 +101,38 @@ curl http://127.0.0.1:8888
 
 如果是前后端分离或网关接入，请把端口按实际暴露方式调整。
 
-## 7. 常见问题
+## 7. 更新代码
+
+当仓库有新代码时，按下面步骤更新：
+
+```bash
+cd /root/aidata/ai/ai
+git pull
+docker stop ai-app
+docker rm ai-app
+docker build -t ai-app .
+docker run -d \
+  --name ai-app \
+  --restart unless-stopped \
+  -p 8888:8888 \
+  -v /root/aidata/ai/config/application.properties:/app/config/application.properties \
+  -v /root/aidata/ai/logs:/app/logs \
+  ai-app
+```
+
+如果只是改了 `application.properties`，不用重新构建镜像，直接修改宿主机上的配置文件后重启容器即可：
+
+```bash
+docker restart ai-app
+```
+
+日志会保存在宿主机目录 `/root/aidata/ai/logs`，按以下规则滚动：
+
+- 保留最近 7 天
+- 单个日志文件最大 100MB
+- 当前日志文件名：`ai.log`
+
+## 8. 常见问题
 
 ### 7.1 端口被占用
 
@@ -125,4 +164,3 @@ docker exec -it ai-app ls -l /app/config
 - MySQL 是否允许远程连接
 - 防火墙是否放通端口
 - 用户名和密码是否正确
-

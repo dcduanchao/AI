@@ -13,6 +13,7 @@ ENV JAVA_OPTS=""
 ENV SERVER_PORT=8888
 
 VOLUME ["/app/config"]
+VOLUME ["/app/logs"]
 
 COPY --from=build /app/target/*.jar /app/app.jar
 
