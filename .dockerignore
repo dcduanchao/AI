@@ -1,0 +1,8 @@
+target
+.git
+.idea
+.mvn
+.agents
+.claude
+docs
+*.iml
