@@ -34,20 +34,20 @@ public class AuthService {
 
     public Mono<LoginResponseDto> login(LoginRequestDto request) {
         return Mono.fromCallable(() -> {
-                    if (request == null || request.username() == null || request.password() == null) {
+                    if (request == null || request.getUsername() == null || request.getPassword() == null) {
                         throw new IllegalArgumentException("用户名或密码错误");
                     }
-                    UserEntity user = userMapper.selectByUsername(request.username());
+                    UserEntity user = userMapper.selectByUsername(request.getUsername());
                     // 不区分「用户不存在」与「密码错误」，防用户名枚举
                     if (user == null || !user.isEnabled()
-                            || !passwordEncoder.matches(request.password(), user.getPassword())) {
+                            || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                         throw new IllegalArgumentException("用户名或密码错误");
                     }
                     String token = jwtUtil.generateToken(user.getId(), user.getUsername());
-                    Instant expiresAt = Instant.now().plusSeconds(jwtProperties.expireMinutes() * 60L);
+                    Instant expiresAt = Instant.now().plusSeconds(jwtProperties.getExpireMinutes() * 60L);
                     return new LoginResponseDto(
                             token,
-                            jwtProperties.prefix(),
+                            jwtProperties.getPrefix(),
                             expiresAt,
                             new UserInfoDto(user.getId(), user.getUsername(), user.getNickname()));
                 })

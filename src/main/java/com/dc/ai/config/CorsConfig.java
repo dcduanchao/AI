@@ -15,16 +15,16 @@ public class CorsConfig {
     @Bean
     public CorsWebFilter corsWebFilter(CorsProperties properties) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(properties.allowCredentials());
-        configuration.setAllowedMethods(properties.allowedMethods());
-        configuration.setAllowedHeaders(properties.allowedHeaders());
-        configuration.setExposedHeaders(properties.exposedHeaders());
-        configuration.setMaxAge(properties.maxAge());
+        configuration.setAllowCredentials(properties.isAllowCredentials());
+        configuration.setAllowedMethods(properties.getAllowedMethods());
+        configuration.setAllowedHeaders(properties.getAllowedHeaders());
+        configuration.setExposedHeaders(properties.getExposedHeaders());
+        configuration.setMaxAge(properties.getMaxAge());
 
-        if (properties.allowAll()) {
+        if (properties.isAllowAll()) {
             configuration.addAllowedOriginPattern("*");
         } else {
-            properties.allowedOrigins().forEach(configuration::addAllowedOrigin);
+            properties.getAllowedOrigins().forEach(configuration::addAllowedOrigin);
         }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

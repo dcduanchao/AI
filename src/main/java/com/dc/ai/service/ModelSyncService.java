@@ -74,7 +74,7 @@ public class ModelSyncService {
     public SyncResultDto saveSyncedModels(ProviderEntity provider, List<ModelDto> remoteModels) {
         log.info("saveSyncedModels ={},{}",provider.getCode(), JSONObject.toJSONString(remoteModels));
         List<String> modelIds = remoteModels.stream()
-                .map(ModelDto::id)
+                .map(ModelDto::getId)
                 .filter(id -> id != null && !id.isBlank())
                 .distinct()
                 .toList();

@@ -20,12 +20,12 @@ public class ImageService {
     }
 
     public Mono<ImageResponseDto> generate(ImageRequestDto request) {
-        ProviderEntity provider = modelRegistry.findProvider(request.aiCode())
-                .orElseThrow(() -> new IllegalArgumentException("Provider not found in registry: " + request.aiCode()));
-        if (!modelRegistry.hasModel(request.aiCode(), request.model())) {
-            throw new IllegalArgumentException("Model not found in registry for provider " + request.aiCode() + ": " + request.model());
+        ProviderEntity provider = modelRegistry.findProvider(request.getAiCode())
+                .orElseThrow(() -> new IllegalArgumentException("Provider not found in registry: " + request.getAiCode()));
+        if (!modelRegistry.hasModel(request.getAiCode(), request.getModel())) {
+            throw new IllegalArgumentException("Model not found in registry for provider " + request.getAiCode() + ": " + request.getModel());
         }
         AiProviderClient client = providerClientRouter.get(provider.getAdapterType());
-        return client.generateImage(provider, request.model(), request);
+        return client.generateImage(provider, request.getModel(), request);
     }
 }

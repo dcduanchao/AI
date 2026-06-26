@@ -21,12 +21,12 @@ public class JwtUtil {
 
     public JwtUtil(JwtProperties properties) {
         this.properties = properties;
-        this.key = Keys.hmacShaKeyFor(properties.secret().getBytes(StandardCharsets.UTF_8));
+        this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(Long userId, String username) {
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + properties.expireMinutes() * 60_000L);
+        Date expiration = new Date(now.getTime() + properties.getExpireMinutes() * 60_000L);
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim("username", username)

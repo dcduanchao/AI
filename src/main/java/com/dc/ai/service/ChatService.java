@@ -22,15 +22,15 @@ public class ChatService {
     }
 
     public Mono<ChatResponseDto> chat(ChatRequestDto request) {
-        ProviderEntity provider = getProvider(request.aiCode(), request.model());
+        ProviderEntity provider = getProvider(request.getAiCode(), request.getModel());
         AiProviderClient client = providerClientRouter.get(provider.getAdapterType());
-        return client.chat(provider, request.model(), request);
+        return client.chat(provider, request.getModel(), request);
     }
 
     public Flux<ChatChunkDto> streamChat(ChatRequestDto request) {
-        ProviderEntity provider = getProvider(request.aiCode(), request.model());
+        ProviderEntity provider = getProvider(request.getAiCode(), request.getModel());
         AiProviderClient client = providerClientRouter.get(provider.getAdapterType());
-        return client.streamChat(provider, request.model(), request);
+        return client.streamChat(provider, request.getModel(), request);
     }
 
     private ProviderEntity getProvider(String aiCode, String model) {

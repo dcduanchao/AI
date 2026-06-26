@@ -1,12 +1,19 @@
 package com.dc.ai.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
-public record ChatRequestDto(
-        String aiCode,
-        String model,
-        Long conversationId,
-        List<ChatMessageDto> messages,
-        Double temperature
-) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChatRequestDto {
+
+    private String aiCode;
+    private String model;
+    private Long conversationId;
+    private List<ChatMessageDto> messages;
+    private Double temperature;
 }

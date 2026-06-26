@@ -1,9 +1,16 @@
 package com.dc.ai.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
 
-public record ModelsResponseDto(
-        Map<String, List<String>> providers
-) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ModelsResponseDto {
+
+    private Map<String, List<String>> providers;
 }

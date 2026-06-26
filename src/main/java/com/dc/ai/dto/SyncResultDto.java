@@ -1,10 +1,17 @@
 package com.dc.ai.dto;
 
-public record SyncResultDto(
-        Long providerId,
-        String aiCode,
-        int modelCount,
-        String status,
-        String message
-) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SyncResultDto {
+
+    private Long providerId;
+    private String aiCode;
+    private int modelCount;
+    private String status;
+    private String message;
 }

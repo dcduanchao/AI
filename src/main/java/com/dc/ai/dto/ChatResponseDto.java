@@ -1,8 +1,15 @@
 package com.dc.ai.dto;
 
-public record ChatResponseDto(
-        String aiCode,
-        String model,
-        String content
-) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChatResponseDto {
+
+    private String aiCode;
+    private String model;
+    private String content;
 }

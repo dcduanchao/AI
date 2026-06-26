@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.*;
@@ -115,9 +116,9 @@ public class OpenAiCompatibleProviderClient implements AiProviderClient {
     public Mono<ImageResponseDto> generateImage(ProviderEntity provider, String model, ImageRequestDto request) {
         Map<String, Object> body = new HashMap<>();
         body.put("model", model);
-        body.put("prompt", request.prompt());
-        body.put("size", request.size() == null ? "1024x1024" : request.size());
-        body.put("n", request.count() == null ? 1 : request.count());
+        body.put("prompt", request.getPrompt());
+        body.put("size", request.getSize() == null ? "1024x1024" : request.getSize());
+        body.put("n", request.getCount() == null ? 1 : request.getCount());
         log.info("generateImage body: {}", body);
         return webClientImage(provider)
                 .post()
@@ -147,7 +148,12 @@ public class OpenAiCompatibleProviderClient implements AiProviderClient {
                         }
                     }
                     return new ImageResponseDto(provider.getCode(), model, "success", urls, null);
-                }).onErrorResume(WebClientResponseException.class, e -> {
+                }) .retryWhen(
+                        Retry.backoff(3, Duration.ofSeconds(1)) // 重试3次，指数退避
+                                .maxBackoff(Duration.ofSeconds(5))
+                                .filter(this::isRetryableError)
+                )
+                .onErrorResume(WebClientResponseException.class, e -> {
                     log.error("image api failed", e);
                     return Mono.just(new ImageResponseDto(null, model,"IMAGE_SERVICE_ERROR", new ArrayList<>(),e.getMessage()));
                 }).doFinally(signalType -> {
@@ -158,6 +164,19 @@ public class OpenAiCompatibleProviderClient implements AiProviderClient {
                         log.info("⏹️ image api completed (with error or cancel) | model: {}", model);
                     }
                 });
+    }
+
+    private boolean isRetryableError(Throwable e) {
+        if (e instanceof WebClientResponseException ex) {
+            int code = ex.getStatusCode().value();
+
+            // 只重试这些
+            return code == 429   // 限流
+                    || code >= 500; // 服务端错误
+        }
+
+        // IO / 超时类也可以重试
+        return true;
     }
 
     private WebClient webClientImage(ProviderEntity provider) {
@@ -187,18 +206,18 @@ public class OpenAiCompatibleProviderClient implements AiProviderClient {
         Map<String, Object> body = new HashMap<>();
         body.put("model", modelCode);
         body.put("stream", stream);
-        if (request.temperature() != null) {
-            body.put("temperature", request.temperature());
+        if (request.getTemperature() != null) {
+            body.put("temperature", request.getTemperature());
         }
-        body.put("messages", request.messages().stream().map(this::messageBody).toList());
+        body.put("messages", request.getMessages().stream().map(this::messageBody).toList());
         log.info("chatBody={}", JSONObject.toJSONString(body));
         return body;
     }
 
     private Map<String, String> messageBody(ChatMessageDto message) {
         return Map.of(
-                "role", message.role(),
-                "content", message.content()
+                "role", message.getRole(),
+                "content", message.getContent()
         );
     }
 

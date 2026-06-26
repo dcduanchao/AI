@@ -32,7 +32,7 @@ public class ChatController {
     public Flux<ServerSentEvent<ChatChunkDto>> streamChat(@RequestBody ChatRequestDto request) {
         return chatService.streamChat(request)
                 .map(chunk -> ServerSentEvent.<ChatChunkDto>builder(chunk)
-                        .event(chunk.done() ? "done" : "chunk")
+                        .event(chunk.isDone() ? "done" : "chunk")
                         .build());
     }
 }

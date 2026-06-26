@@ -51,8 +51,8 @@ public class JwtAuthWebFilter implements WebFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String header = exchange.getRequest().getHeaders().getFirst(properties.header());
-        String tokenPrefix = properties.prefix() + " ";
+        String header = exchange.getRequest().getHeaders().getFirst(properties.getHeader());
+        String tokenPrefix = properties.getPrefix() + " ";
         if (header == null || !header.startsWith(tokenPrefix)) {
             return unauthorized(exchange, "未登录");
         }
