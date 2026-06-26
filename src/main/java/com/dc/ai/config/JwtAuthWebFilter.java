@@ -82,7 +82,7 @@ public class JwtAuthWebFilter implements WebFilter, Ordered {
 
     @Override
     public int getOrder() {
-        // 尽量靠前执行
-        return -100;
+        // CORS 过滤器需要先执行，确保 401 响应也带跨域响应头。
+        return 100;
     }
 }

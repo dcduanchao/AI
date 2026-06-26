@@ -47,6 +47,33 @@ cd ai
 - `GROK_API_KEY`
 - `JWT_SECRET`
 
+### 3.1 跨域配置
+
+允许所有域访问：
+
+```properties
+app.cors.allow-all=true
+```
+
+只允许指定域访问：
+
+```properties
+app.cors.allow-all=false
+app.cors.allowed-origins=http://localhost:5173,http://ai.du-ai.top
+```
+
+常用完整配置：
+
+```properties
+app.cors.allow-all=false
+app.cors.allowed-origins=http://localhost:5173,http://ai.du-ai.top
+app.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+app.cors.allowed-headers=*
+app.cors.exposed-headers=
+app.cors.allow-credentials=true
+app.cors.max-age=3600
+```
+
 ## 4. 构建镜像
 
 在项目根目录执行：
