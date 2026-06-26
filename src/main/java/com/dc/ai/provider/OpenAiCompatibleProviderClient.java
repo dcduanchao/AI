@@ -122,7 +122,7 @@ public class OpenAiCompatibleProviderClient implements AiProviderClient {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(root -> {
-                    log.info("image: {},={}", provider.getCode(), root);
+
                     List<String> urls = new ArrayList<>();
                     JsonNode data = root.path("data");
                     if (data.isArray()) {

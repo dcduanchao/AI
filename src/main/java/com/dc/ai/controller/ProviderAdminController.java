@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/admin/providers")
+@RequestMapping("/admin/providers")
 public class ProviderAdminController {
 
     private final ModelSyncService modelSyncService;

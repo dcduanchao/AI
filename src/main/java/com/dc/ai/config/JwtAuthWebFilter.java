@@ -27,7 +27,8 @@ public class JwtAuthWebFilter implements WebFilter, Ordered {
 
     /** 无需登录即可访问的路径。 */
     private static final List<String> WHITELIST = List.of(
-            "/api/auth/login"
+            "/auth/login",
+            "/aiapi/auth/login"
     );
 
     private final JwtUtil jwtUtil;
@@ -67,7 +68,15 @@ public class JwtAuthWebFilter implements WebFilter, Ordered {
     }
 
     private boolean isWhitelisted(String path) {
-        return WHITELIST.contains(path);
+        return WHITELIST.contains(path) || WHITELIST.contains(stripBasePath(path));
+    }
+
+    private String stripBasePath(String path) {
+        String basePath = "/aiapi";
+        if (path.startsWith(basePath)) {
+            return path.substring(basePath.length());
+        }
+        return path;
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
